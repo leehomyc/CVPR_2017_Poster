@@ -47,7 +47,7 @@
 \setlength{\parsep}{0pt}
 }
 
-\definecolor{lightblue}{rgb}{.6,0,0} % Defines the color used for content box headers
+\definecolor{lightblue}{rgb}{0.73,0.13,0.19} % Defines the color used for content box headers
 
 \begin{document}
 
@@ -82,7 +82,7 @@ linewidth=2pt % Width of the border lines around content boxes
 %	OBJECTIVES
 %----------------------------------------------------------------------------------------
 
-\headerbox{Bad Things Happen}{name=objectives,column=0,span=2, row=0}{
+\headerbox{Bad Things Happen}{name=objectives,column=0,span=1, row=0}{
 \begin{minipage}[t]{1\linewidth}
 \begin{center}
 \includegraphics[width=1\columnwidth]{figures/problem.png}
@@ -100,94 +100,43 @@ Imaging you would like to edit a photo after breaking up, or restore an old pict
 %	INTRODUCTION
 %----------------------------------------------------------------------------------------
 
-\headerbox{The Content and Texture Network}{name=introduction,column=2,span=2, row=0}{
+\headerbox{The Content and Texture Network}{name=introduction,column=1,span=3, row=0}{
 \begin{minipage}{1\linewidth}
 \begin{center}
-\noindent\textbf{From low-res: the content network}
+\noindent\textbf{Predicting low-res content: the content network}
 \end{center}
 \begin{minipage}[t]{1\linewidth}
 \begin{center}
-\includegraphics[width=1\columnwidth]{figures/content_network_crop.pdf}
+\includegraphics[width=1\columnwidth]{figures/content_network.png}
 \end{center}
 \end{minipage}
-\noindent\textbf{To high-res: the texture network}
-A typical joint graphical lasso is formulated as the following optimization problem:
-\begin{equation}
-\min \sum_{k=1}^{K} L({\bm{\Theta}}^{(k)}) + P(\bm{\Theta}) 
-\end{equation}
-Where $\bm{\Theta}^{(k)} \succ 0$ is the precision matrix $(k=1, \dots ,K)$ and $\bm{\Theta}$ represents the set of $\bm{\Theta}^{(k)}$. The negative log-likelihood $L(\bm{\Theta}^{(k)})$ and the regularization $P(\bm{\Theta})$  are defined as follows.
-\begin{equation}
-L(\bm{\Theta}^{(k)}) = -\log \det (\bm{\Theta}^{(k)}) + \mathrm{tr}(\mathcal{S}^{(k)}{\bm{\Theta}}^{(k)})
-\end{equation}
-\begin{equation}
-P(\bm{\Theta}) = \lambda_{1}\sum_{k=1}^{K}\| \bm{\Theta}^{(k)}\|_{1} + \lambda_{2}J(\bm{\Theta})
-\end{equation}
-
-Here $\lambda_{1}>0$ and $\lambda_{2}>0$ and $J(\bm{\Theta})$ is some penalty function used to encourage similarity (of the structural patterns) among the $K$ classes. In this paper, we focus on group graphical lasso. That is,
-\begin{eqnarray}
-J(\bm{\Theta}) = 2\sum_{1 \leq i<j\leq p} \sqrt{\sum_{k=1}^{K}(\bm{\Theta}_{i,j}^{(k)})^{2}}
-\end{eqnarray}
-
+\begin{center}
+\noindent\textbf{Predicting high-res texture: the texture network}
+\end{center}
+\begin{center}
+\noindent\textbf{Multi-scale Optimization}
+\end{center}
 \end{minipage}
 
 }
 
-%----------------------------------------------------------------------------------------
 
-%----------------------------------------------------------------------------------------
-%	CONTACT INFORMATION
-%----------------------------------------------------------------------------------------
-
-
-%----------------------------------------------------------------------------------------
-%	MATERIALS AND METHODS
-%----------------------------------------------------------------------------------------
-
-
-
-\headerbox{Non-uniform Thresholding}{name=method,column=1,span=3, below=introduction}{ % This block's bottom aligns with the bottom of the conclusion block
+\headerbox{Analysis and Results}{name=method,column=1,span=3, below=introduction}{ % This block's bottom aligns with the bottom of the conclusion block
 \begin{minipage}{0.6\linewidth}
-Non-uniform thresholding generates a non-uniform feasible partition by thresholding the $K$ empirical covariance matrices separately. In a non-uniform partition, two variables of the same group in one class may belong to different groups in another class. Figure \ref{illustrate_non_uniform} shows an example of non-uniform partition. In this example, all the matrix elements in white color are set to 0 by non-uniform thresholding. Except the white color, each of the other colors indicates one group. The $7^{\text{th}}$ and $9^{\text{th}}$ variables belong to the same group in the left matrix, but not in the right matrix. Similarly, the $3^{\text{rd}}$ and $4^{\text{th}}$ variables belong to the same group in the right matrix, but not in the left matrix.\\
-\vspace{-30pt}
-\begin{center}
-\includegraphics[width=.5\columnwidth]{figures/non_uniform.png}
-\end{center}
-\end{minipage}
-\begin{minipage}[t]{0.35\linewidth}
-\vspace{-110pt}
-\begin{center}
-\includegraphics[width=1\columnwidth]{figures/screenshot.png}
-\end{center}
+We should provide ablation study here
 
 \end{minipage}
 
 }
 
 
-\headerbox{Supplemental and Code}{name=method2,column=1, span=3, below=method}{ % This block's bottom aligns with the bottom of the conclusion block
-Code is available at \href{www.harryyang.xyz}www.harryyang.xyz
+\headerbox{Code and Supplementary Material}{name=method2,column=1, span=3, below=method}{ % This block's bottom aligns with the bottom of the conclusion block
+Code is available at \href{www.harryyang.org/inpainting}www.harryyang.org/inpainting
 }
 
-\headerbox{Experiments}{name=method,column=0, below=objectives, bottomaligned=method2}{ % This block's bottom aligns with the bottom of the conclusion block
-\begin{itemize}
-\item Synthetic data
-\vspace{-10pt}
-\begin{center}
-\includegraphics[width=.8\columnwidth]{figures/synthetic.png}
-\end{center}
-\item Real data
-\vspace{-10pt}
-\begin{center}
-\includegraphics[width=.8\columnwidth]{figures/real.png}
-\end{center}
-\end{itemize}
+\headerbox{Algorithm}{name=method,column=0, below=objectives, bottomaligned=method2}{ % This block's bottom aligns with the bottom of the conclusion block
 
 }
-
-%----------------------------------------------------------------------------------------
-%	RESULTS 2
-%----------------------------------------------------------------------------------------
-
 
 
 %----------------------------------------------------------------------------------------
