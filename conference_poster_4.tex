@@ -74,30 +74,25 @@ linewidth=2pt % Width of the border lines around content boxes
 %	TITLE SECTION 
 %----------------------------------------------------------------------------------------
 %
-{\includegraphics[height=5em]{logo.jpg}} % First university/lab logo on the left
-{\bf\textsc{\huge Exact Hybrid Covariance Thresholding for Joint Graphical Lasso}\vspace{0.5em}} % Poster title
-{\textsc{\{Qingming Tang*, Harry Yang*, Jian Peng$^\dagger$ and Jinbo Xu*\} \hspace{12pt} \parbox{0.3\textwidth}{\small *Toyota Technological Institute at Chicago\\$^\dagger$MIT}}} % Author names and institution
-{\includegraphics[height=5em]{mit.png}} 
+{\includegraphics[height=5em]{usc_logo.png}} % First university/lab logo on the left
+{\bf\textsc{\huge High-Resolution Image Inpainting using Multi-Scale Neural Patch Synthesis}\vspace{0.5em}} % Poster title
+{\textsc{\{Chao ``Harry'' Yang, Xin Lu, Zhe Lin, Eli Schechtman, Oliver Wang and Hao Li\} \hspace{12pt} \parbox{0.3\textwidth}{\small *University of Southern California\\$^\dagger$Adobe Research}}} % Author names and institution
+{\includegraphics[height=5em]{adobe_logo.jpg}} 
 %----------------------------------------------------------------------------------------
 %	OBJECTIVES
 %----------------------------------------------------------------------------------------
 
-\headerbox{Overview}{name=objectives,column=0,row=0}{
-we design a hybrid algorithm to
-achieve non-uniform thresholding for Group 
-Graphical Lasso problem by
+\headerbox{Bad Things Happen}{name=objectives,column=0,span=2, row=0}{
+\begin{minipage}[t]{1\linewidth}
+\begin{center}
+\includegraphics[width=1\columnwidth]{figures/problem.png}
+\end{center}
+\end{minipage}
+Imaging you would like to edit a photo after breaking up, or restore an old picture from damages, we designed a MULTI-SCALE DEEP LEARNING algorithm to help you! We
 \begin{itemize}
-\item Proposing a novel hybrid covariance thresholding algorithm that can effectively
-identify zero entries in the precision matrices and split a large joint
-graphical lasso problem into many small subproblems.
-\item Establishing
-necessary and sufficient conditions for our hybrid covariance thresholding algorithm.
+\item proposed a joint optimization framework that can hallucinates missing image regions by modeling a global content constraint and local texture constraint with convolutional neural networks.
+\item further introduced a multi-scale neural patch syn- thesis algorithm for high-resolution image inpainting based on the joint optimization framework.
 \end{itemize}
-\noindent\textbf{Advantage: }Our hybrid covariance
-thresholding method can split group graphical lasso into much smaller
-subproblems, each of which can be solved very fast. Experimental results on both synthetic and real data validate the superior
-performance of our thresholding method over the others.
-
 \vspace{0.3em} % When there are two boxes, some whitespace may need to be added if the one on the right has more content
 }
 
@@ -105,10 +100,17 @@ performance of our thresholding method over the others.
 %	INTRODUCTION
 %----------------------------------------------------------------------------------------
 
-\headerbox{Joint Graphical Lasso}{name=introduction,column=1,span=3, row=0}{
+\headerbox{The Content and Texture Network}{name=introduction,column=2,span=2, row=0}{
 \begin{minipage}{1\linewidth}
-\noindent\textbf{Gaussian Graphical Model} 
-\noindent\textbf{Joint Graphical Lasso}
+\begin{center}
+\noindent\textbf{From low-res: the content network}
+\end{center}
+\begin{minipage}[t]{1\linewidth}
+\begin{center}
+\includegraphics[width=1\columnwidth]{figures/content_network_crop.pdf}
+\end{center}
+\end{minipage}
+\noindent\textbf{To high-res: the texture network}
 A typical joint graphical lasso is formulated as the following optimization problem:
 \begin{equation}
 \min \sum_{k=1}^{K} L({\bm{\Theta}}^{(k)}) + P(\bm{\Theta}) 
