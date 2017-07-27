@@ -91,12 +91,44 @@ linewidth=2pt % Width of the border lines around content boxes
 \includegraphics[width=1\columnwidth]{figures/problem.png}
 \end{center}
 \end{minipage}
-Imaging you would like to edit a photo after breaking up, or restore an old picture from damages, we designed a MULTI-SCALE DEEP LEARNING algorithm to help you! We
+Imaging you would like to edit a photo after breaking up, or restore an old picture from damages, we designed a MULTI-SCALE DEEP LEARNING algorithm to help you! Our approach
 \begin{itemize}
 \item proposed a joint optimization framework that can hallucinates missing image regions by modeling a global content constraint and local texture constraint with convolutional neural networks.
-\item further introduced a multi-scale neural patch syn- thesis algorithm for high-resolution image inpainting based on the joint optimization framework.
+\item further introduced a multi-scale neural patch synthesis algorithm for high-resolution image inpainting based on the joint optimization framework.
 \end{itemize}
 \vspace{0.3em} % When there are two boxes, some whitespace may need to be added if the one on the right has more content
+}
+
+
+\headerbox{The Algorithm}{name=algorithm,column=0,span=1, 
+ below=objectives}{
+ \vspace{0.6cm}
+\begin{minipage}[t]{1\linewidth}
+\begin{center}
+\begin{tabular}{rl}
+\hline\noalign{\smallskip}
+\multicolumn{2}{l}{\textbf{High-Resolution Hole Filling}}\\
+\multicolumn{2}{l}{\textbf{with Multi-Scale Neural Patch Synthesis}}\\
+\hline\noalign{\smallskip}
+\multicolumn{2}{l}{\textbf{Input:} Image $x$, }\\ 
+& the content network $f$, \\
+& the texture network $t$,\\
+& the number of scales $N$ \\
+1: & Downsize $x$ to $128\times 128$. \\
+2: & Compute the initial content reference $x^1$. \\ 
+   & by giving $x$ as input to $f$.\\
+3: & \textbf{for} $s \in [1, 2, \dots , N]$: \\
+4. & Initialize $\tilde{x}=x^s$. \\
+4: & Update $\tilde{x}$ that minimizes the joint loss:\\
+   & $L=L_{content}+L_{texture}+L_{tv-smoothness}$. \\
+5: & Compute $x^{s+1} $ by up-sampling $\tilde{x}$.\\  
+7: & \textbf{end for}\\
+8: & Return $\tilde{x}^N$.\\
+\hline
+\end{tabular}
+\end{center}
+\end{minipage}
+\vspace{0.6cm}
 }
 
 %----------------------------------------------------------------------------------------
@@ -114,9 +146,9 @@ Imaging you would like to edit a photo after breaking up, or restore an old pict
 \noindent\textbf{Context Encoder Predicts the Low-Res Content}
 \end{center}
 The content constraint: 
-\begin{equation}
+\begin{equation*}
 E_c(h(x,R), h(x_i,R))  = \parallel h(x,R) - h(x_i,R) \parallel_2^2
-\end{equation}
+\end{equation*}
 \end{minipage}
 }
 
@@ -124,7 +156,7 @@ E_c(h(x,R), h(x_i,R))  = \parallel h(x,R) - h(x_i,R) \parallel_2^2
 \begin{minipage}{1\linewidth}
 \begin{minipage}[t]{1\linewidth}
 \begin{center}
-\includegraphics[width=1\columnwidth]{figures/content_network.png}
+\includegraphics[width=1\columnwidth]{figures/texture_network.png}
 \end{center}
 \end{minipage}
 \begin{center}
@@ -133,7 +165,7 @@ E_c(h(x,R), h(x_i,R))  = \parallel h(x,R) - h(x_i,R) \parallel_2^2
 The texture constraint:
 \begin{multline}
 E_t(\phi_t(x),R)  = \\ 
-\frac{1}{|R^{\phi}|}\sum_{i\in R^{\phi}} \parallel h(\phi_t(x),P_i) - h(\phi_t(x),P_{nn(i)})  \parallel_2^2
+\frac{1}{|R^{\phi}|}\sum_{i\in R^{\phi}} \parallel h(\phi_t(x),P_i) - h(\phi_t(x),P_{nn(i)})  \parallel_2^2 \nonumber
 \end{multline}
 \end{minipage}
 }
@@ -142,158 +174,154 @@ E_t(\phi_t(x),R)  = \\
 At each iteration, we minimize:\\
 \begin{minipage}{1\linewidth}
 \begin{eqnarray*}
-\tilde{x}_{i+1} = && \argmin_{x} E_c(h(x,R), h(x_i,R)) \nonumber \\ 
-&& +\alpha E_t(\phi_t(x),R^{\phi})  + \beta \Upsilon(x)
+\tilde{x}_{i+1} = & \argmin_{x} E_c(h(x,R), h(x_i,R)) \nonumber \\ 
+& +\alpha E_t(\phi_t(x),R^{\phi})  + \beta \Upsilon(x)
 \label{eq:opt}
 \end{eqnarray*}
 \end{minipage}
 }
 
-\headerbox{Multi-scale Optimization}{name=multiscale,column=1,span=1, below=loss}{
+\headerbox{Multi-scale Optimization}{name=multiscale,column=1,span=1,bottomaligned = algorithm, below=loss}{
 We optimize at three scales: 128, 256 and 512:
-\begin{minipage}{1\linewidth}
+\vspace{0.4cm}
 \begin{minipage}[t]{1\linewidth}
 \begin{center}
-\includegraphics[width=1\columnwidth]{figures/content_network.png}
+\includegraphics[width=0.5\columnwidth]{figures/multiscale_1.png}\\
+\includegraphics[width=0.5\columnwidth]{figures/multiscale_2.png}
 \end{center}
 \end{minipage}
+}
+
+\headerbox{\small Changing the Texture Weight $\alpha$}{name=weight,column=2,span=1, row=0}{ % This block's bottom aligns with the bottom of the conclusion block
+The weight $\alpha$ measures the contribution of the texture constraint relative to the content constraint. It is a trade off between the sharpness of the texture and coherence of the structure: \\
+\begin{minipage}{1\linewidth}
+\begin{minipage}[t]{1\linewidth}
+\setlength\tabcolsep{1.5pt}
+\centering
+\tiny
+\begin{tabular}{cccc}
+\includegraphics[width=.20\linewidth]{figures/pink_0046_r.png} &
+\includegraphics[width=.20\linewidth]{figures/res_3_100_1_r.png} &
+\includegraphics[width=.20\linewidth]{figures/res_3_100_2_r.png} &
+\includegraphics[width=.20\linewidth]{figures/res_3_100_3_r.png} \\
+(a) Input image & (b) $\alpha=1e-6$ & (c) $\alpha=1e-5$ & (d) $\alpha=4e-5$\\ 
+\end{tabular}
+%\caption{The effect of texture weight $\alpha$. }\label{alpha}
+\end{minipage}
+\end{minipage}
+}
+
+\headerbox{\small Dropping the Content Constraint}{name=drop_content,column=2,span=1, below=weight }{ % This block's bottom aligns with the bottom of the conclusion block
+Without using the content term to guide the optimization, the structure of the inpainting results is completely incorrect, although they are visually sharp:\\
+\begin{minipage}{1\linewidth}
+\begin{minipage}[t]{1\linewidth}
+\setlength\tabcolsep{1.5pt}
+\centering
+\tiny
+\begin{tabular}{cccc}
+\includegraphics[width=.30\textwidth]{figures/ablation/pink_0065.jpg}&
+\includegraphics[width=.30\textwidth]{figures/ablation/no_content.jpg} &
+\includegraphics[width=.30\textwidth]{figures/ablation/result.jpg} \\
+Input & Output without CN & Output with CN  \\ 
+\end{tabular}
+%\caption{The effect of texture weight $\alpha$. }\label{alpha}
+\end{minipage}
+\end{minipage}
+}
+
+\headerbox{\small Dropping the Adversarial Loss}{name=drop_adversarial,column=2,span=1, below=drop_content}{ 
+When the initial prediction is blurry (using $\ell_2$ loss only), the final result becomes blurrier as well comparing with using the content network trained with both $\ell_2$ and adversarial loss.
+\begin{minipage}{1\linewidth}
+\centering
+%\begin{minipage}[t]{1\linewidth}
+\setlength\tabcolsep{1pt}
+\tiny
+\begin{tabular}{cccc}
+\includegraphics[width=.24\linewidth]{figures/fig2/fake_0049_l2_r.png} &
+\includegraphics[width=.24\linewidth]{figures/fig2/res_3_100_r.png} & 
+\includegraphics[width=.24\linewidth]{figures/fig2/fake_0023_adversarial_r.png} &
+\includegraphics[width=.24\linewidth]{figures/fig2/no_bdry_0023_r.png} \\
+(a) CN with $\ell_2$ loss & (b) (a)'s final output  & (c) CN with $\ell_2$ \& Adv loss & (d) (c)'s final output. \\ 
+\end{tabular}
+%\end{minipage}
+\end{minipage}
+}
+\headerbox{\small Overall Comparison with Other Methods}{name=comparison,column=2,span=1, below=drop_adversarial}{
+\begin{minipage}{1\linewidth}
 \begin{center}
-\noindent\textbf{Pre-trained VGG: Optimizing the high-res texture}
+ \includegraphics[width=0.85\linewidth]{figures/low_res/low_res2_3_3.png}
 \end{center}
+\end{minipage}
+\vspace{-0.2cm}
+}
+
+\headerbox{\small We Love Cats and Dogs}{name=imagenet,column=3,span=1, row=0}{ 
+And we have collected so many dogs and cats for you:\\
+\begin{minipage}{1\linewidth}
+\setlength\tabcolsep{1.5pt}
+\centering
+\tiny
+\begin{tabular}{cccc}
+\includegraphics[width=.24\linewidth]{figures/pink_0076.jpg} &
+\includegraphics[width=.24\linewidth]{figures/no_bdry_0076.jpg} &
+\includegraphics[width=.24\linewidth]{figures/pink_0081.jpg} &
+\includegraphics[width=.24\linewidth]{figures/no_bdry_0081.jpg} \\
+\includegraphics[width=.24\linewidth]{figures/pink_0082.jpg} &
+\includegraphics[width=.24\linewidth]{figures/no_bdry_0082.jpg} &
+\includegraphics[width=.24\linewidth]{figures/pink_0154.jpg} &
+\includegraphics[width=.24\linewidth]{figures/no_bdry_0154.jpg} \\
+\includegraphics[width=.24\linewidth]{figures/pink_0071.jpg} &
+\includegraphics[width=.24\linewidth]{figures/no_bdry_0071.jpg} &
+\includegraphics[width=.24\linewidth]{figures/pink_0097.jpg} &
+\includegraphics[width=.24\linewidth]{figures/no_bdry_0097.jpg} \\
+\includegraphics[width=.24\linewidth]{figures/dog_hole.jpg} &
+\includegraphics[width=.24\linewidth]{figures/res_3_100.jpg} &
+\includegraphics[width=.24\linewidth]{figures/pink_0342.jpg} &
+\includegraphics[width=.24\linewidth]{figures/no_bdry_0342.jpg} \\ 
+\end{tabular}
+%\caption{The effect of texture weight $\alpha$. }\label{alpha}
 \end{minipage}
 }
 
-
-\headerbox{Changing the Weight $\alpha$}{name=weight,column=2,span=1, row=0}{ % This block's bottom aligns with the bottom of the conclusion block
-The weight $\alpha$ measures the contribution of the texture constraint relative to the content constraint. It is a trade off between the sharpness of the texture and coherence of the structure: 
-\begin{figure}[h!]
+\headerbox{\small And What Inpaints Paris Like Paris?}{name=paris,column=3,span=1, below=imagenet}{ 
+\begin{minipage}{1\linewidth}
 \setlength\tabcolsep{1.5pt}
 \centering
-\small
+\tiny
 \begin{tabular}{cccc}
-\includegraphics[width=.24\linewidth]{figures/pink_0046_r.png} &
-\includegraphics[width=.24\linewidth]{figures/res_3_100_1_r.png} &
-\includegraphics[width=.24\linewidth]{figures/res_3_100_2_r.png} &
-\includegraphics[width=.24\linewidth]{figures/res_3_100_3_r.png} \\
-(a) Input image & (b) $\alpha=1e-6$ & (c) $\alpha=1e-5$ & (d) $\alpha=4e-5$\\ 
+\includegraphics[width=.24\linewidth]{figures/paris/pink_0023.jpg} &
+\includegraphics[width=.24\linewidth]{figures/paris/no_bdry_0023.jpg} &
+\includegraphics[width=.24\linewidth]{figures/paris/pink_0048.jpg} &
+\includegraphics[width=.24\linewidth]{figures/paris/no_bdry_0048.jpg} \\
+\includegraphics[width=.24\linewidth]{figures/paris/pink_0078.jpg} &
+\includegraphics[width=.24\linewidth]{figures/paris/no_bdry_0078.jpg} &
+\includegraphics[width=.24\linewidth]{figures/paris/pink_0085.jpg} &
+\includegraphics[width=.24\linewidth]{figures/paris/no_bdry_0085.jpg} \\
+\includegraphics[width=.24\linewidth]{figures/paris/pink_0097.jpg} &
+\includegraphics[width=.24\linewidth]{figures/paris/no_bdry_0097.jpg} &
+\includegraphics[width=.24\linewidth]{figures/paris/pink_0119.jpg} &
+\includegraphics[width=.24\linewidth]{figures/paris/no_bdry_0119.jpg} \\
+\includegraphics[width=.24\linewidth]{figures/paris/pink_0165.jpg} &
+\includegraphics[width=.24\linewidth]{figures/paris/no_bdry_0165.jpg} &
+\includegraphics[width=.24\linewidth]{figures/paris/pink_0183.jpg} &
+\includegraphics[width=.24\linewidth]{figures/paris/no_bdry_0183.jpg} \\
+
 \end{tabular}
 %\caption{The effect of texture weight $\alpha$. }\label{alpha}
-\end{figure} 
+\end{minipage}
 }
 
-\headerbox{Dropping the content constraint}{name=drop_content,column=2,span=1, below=weight }{ % This block's bottom aligns with the bottom of the conclusion block
-The weight $\alpha$ measures the contribution of the texture constraint relative to the content constraint. It is a trade off between the sharpness of the texture and coherence of the structure: 
-\begin{figure}[h!]
-\setlength\tabcolsep{1.5pt}
-\centering
-\small
-\begin{tabular}{cccc}
-\includegraphics[width=.24\linewidth]{figures/pink_0046_r.png} &
-\includegraphics[width=.24\linewidth]{figures/res_3_100_1_r.png} &
-\includegraphics[width=.24\linewidth]{figures/res_3_100_2_r.png} &
-\includegraphics[width=.24\linewidth]{figures/res_3_100_3_r.png} \\
-(a) Input image & (b) $\alpha=1e-6$ & (c) $\alpha=1e-5$ & (d) $\alpha=4e-5$\\ 
-\end{tabular}
-%\caption{The effect of texture weight $\alpha$. }\label{alpha}
-\end{figure} 
+\headerbox{\small For Paper, Results, Code and More}{name=qr,column=3,span=1, below=paris}{
+\vspace{-0.1cm}
+\begin{minipage}{1\linewidth}
+\begin{center}
+ \includegraphics[width=0.15\linewidth]{figures/qr_code.jpg}
+\end{center}
+\end{minipage}
+\vspace{-0cm}
 }
-
-\headerbox{Dropping the adversarial loss}{name=drop_adversarial,column=2,span=1, below=drop_content}{ % This block's bottom aligns with the bottom of the conclusion block
-The weight $\alpha$ measures the contribution of the texture constraint relative to the content constraint. It is a trade off between the sharpness of the texture and coherence of the structure: 
-\begin{figure}[h!]
-\setlength\tabcolsep{1.5pt}
-\centering
-\small
-\begin{tabular}{cccc}
-\includegraphics[width=.24\linewidth]{figures/pink_0046_r.png} &
-\includegraphics[width=.24\linewidth]{figures/res_3_100_1_r.png} &
-\includegraphics[width=.24\linewidth]{figures/res_3_100_2_r.png} &
-\includegraphics[width=.24\linewidth]{figures/res_3_100_3_r.png} \\
-(a) Input image & (b) $\alpha=1e-6$ & (c) $\alpha=1e-5$ & (d) $\alpha=4e-5$\\ 
-\end{tabular}
-%\caption{The effect of texture weight $\alpha$. }\label{alpha}
-\end{figure} 
-}
-
-\headerbox{Comparison}{name=drop_adversarial,column=2,span=1, below=drop_adversarial}{ % This block's bottom aligns with the bottom of the conclusion block
-The weight $\alpha$ measures the contribution of the texture constraint relative to the content constraint. It is a trade off between the sharpness of the texture and coherence of the structure: 
-\begin{figure}[h!]
-\setlength\tabcolsep{1.5pt}
-\centering
-\small
-\begin{tabular}{cccc}
-\includegraphics[width=.24\linewidth]{figures/pink_0046_r.png} &
-\includegraphics[width=.24\linewidth]{figures/res_3_100_1_r.png} &
-\includegraphics[width=.24\linewidth]{figures/res_3_100_2_r.png} &
-\includegraphics[width=.24\linewidth]{figures/res_3_100_3_r.png} \\
-(a) Input image & (b) $\alpha=1e-6$ & (c) $\alpha=1e-5$ & (d) $\alpha=4e-5$\\ 
-\end{tabular}
-%\caption{The effect of texture weight $\alpha$. }\label{alpha}
-\end{figure} 
-}
-
-\headerbox{Result on ImageNet}{name=imagenet,column=3,span=1, row=0}{ % This block's bottom aligns with the bottom of the conclusion block
-The weight $\alpha$ measures the contribution of the texture constraint relative to the content constraint. It is a trade off between the sharpness of the texture and coherence of the structure: 
-\begin{figure}[h!]
-\setlength\tabcolsep{1.5pt}
-\centering
-\small
-\begin{tabular}{cccc}
-\includegraphics[width=.24\linewidth]{figures/pink_0046_r.png} &
-\includegraphics[width=.24\linewidth]{figures/res_3_100_1_r.png} &
-\includegraphics[width=.24\linewidth]{figures/res_3_100_2_r.png} &
-\includegraphics[width=.24\linewidth]{figures/res_3_100_3_r.png} \\
-(a) Input image & (b) $\alpha=1e-6$ & (c) $\alpha=1e-5$ & (d) $\alpha=4e-5$\\ 
-\end{tabular}
-%\caption{The effect of texture weight $\alpha$. }\label{alpha}
-\end{figure} 
-}
-
-
-\headerbox{Result on Paris Streetview}{name=paris,column=3,span=1, below=imagenet}{ % This block's bottom aligns with the bottom of the conclusion block
-The weight $\alpha$ measures the contribution of the texture constraint relative to the content constraint. It is a trade off between the sharpness of the texture and coherence of the structure: 
-\begin{figure}[h!]
-\setlength\tabcolsep{1.5pt}
-\centering
-\small
-\begin{tabular}{cccc}
-\includegraphics[width=.24\linewidth]{figures/pink_0046_r.png} &
-\includegraphics[width=.24\linewidth]{figures/res_3_100_1_r.png} &
-\includegraphics[width=.24\linewidth]{figures/res_3_100_2_r.png} &
-\includegraphics[width=.24\linewidth]{figures/res_3_100_3_r.png} \\
-(a) Input image & (b) $\alpha=1e-6$ & (c) $\alpha=1e-5$ & (d) $\alpha=4e-5$\\ 
-\end{tabular}
-%\caption{The effect of texture weight $\alpha$. }\label{alpha}
-\end{figure} 
-}
-
-\headerbox{Result on Arbitrary Shape}{name=arbitrary,column=3,span=1, below=paris}{ % This block's bottom aligns with the bottom of the conclusion block
-The weight $\alpha$ measures the contribution of the texture constraint relative to the content constraint. It is a trade off between the sharpness of the texture and coherence of the structure: 
-\begin{figure}[h!]
-\setlength\tabcolsep{1.5pt}
-\centering
-\small
-\begin{tabular}{cccc}
-\includegraphics[width=.24\linewidth]{figures/pink_0046_r.png} &
-\includegraphics[width=.24\linewidth]{figures/res_3_100_1_r.png} &
-\includegraphics[width=.24\linewidth]{figures/res_3_100_2_r.png} &
-\includegraphics[width=.24\linewidth]{figures/res_3_100_3_r.png} \\
-(a) Input image & (b) $\alpha=1e-6$ & (c) $\alpha=1e-5$ & (d) $\alpha=4e-5$\\ 
-\end{tabular}
-%\caption{The effect of texture weight $\alpha$. }\label{alpha}
-\end{figure} 
-}
-
-\headerbox{Code and Supplementary Material}{name=code,column=3, span=1, below=arbitrary}{ % This block's bottom aligns with the bottom of the conclusion block
-Code is available at \href{www.harryyang.org/inpainting}www.harryyang.org/inpainting
-}
-
-\headerbox{Algorithm}{name=algorithm,column=0, below=objectives}{ % This block's bottom aligns with the bottom of the conclusion block
-test
-}
-
-
 %----------------------------------------------------------------------------------------
+
 
 \end{poster}
 
